@@ -11,7 +11,6 @@ namespace EventAggregatorDoor
         private static readonly EventAggregator instance = new EventAggregator();
         private Dictionary<Type, List<Action<EventArgs>>> subscribers = new Dictionary<Type, List<Action<EventArgs>>>();
 
-        // Explicit static constructor to ensure the laziness of instantiation
         private EventAggregator() { }
 
         public static EventAggregator Instance

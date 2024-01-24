@@ -24,13 +24,13 @@ namespace EventAggregatorDoor
         public void StartTimer(EventArgs eventArgs)
         {
             DoorEventArgs doorEventArgs = (DoorEventArgs)eventArgs;
-            if (this.door.state = DoorStates.OPEN)
+            if (doorEventArgs.door.state == DoorStates.OPEN)
             {
                 Thread timerThread = new Thread(() =>
                 {
                     Thread.Sleep(door.doorTimeThreshold * 1000);
 
-                    if (door.state == DoorStates.OPEN) eventAggregator.Publish(new ThresholdReachedEvent()); ;
+                    if (door.state == DoorStates.OPEN) eventAggregator.Publish(new ThresholdReachedEvent(door)); ;
 
                 });
                 timerThread.Start();

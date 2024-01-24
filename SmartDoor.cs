@@ -8,19 +8,14 @@ using System.Threading.Tasks;
 namespace EventAggregatorDoor
 {
     public class SmartDoor : SimpleDoor
-    {
-        public event Action <SmartDoor> TimerThresholdReachedEvent;
-        
-        public Timer timer { get; private set; }
-        
-
+    {    
         public int doorTimeThreshold = 3;
-        private EventAggregator eventAggregator;
-        public SmartDoor(string Name, EventAggregator eventAggregator, double Price = 200) : base(Name, Price)
+
+        public SmartDoor(string Name, EventAggregator eventAggregator, double Price = 200) : base(Name, eventAggregator, Price)
         {
             price += CalculateAdditionalPrice(this);
-            timer = new Timer(this, eventAggregator);//remove event and call method directly
-            this.eventAggregator = eventAggregator;
+         
+            this.eventAggregator.Subscribe<ThresholdReachedEvent>(ThresholdReached);
         }
 
         public void SetTimer(int Time)
@@ -39,9 +34,10 @@ namespace EventAggregatorDoor
             eventAggregator.Publish(new DoorEventArgs(this));
         }
 
-        public void ThresholdReached()
+        public void ThresholdReached(EventArgs eventArgs)
         {
-            
+            ThresholdReachedEvent thresholdReachedEvent = (ThresholdReachedEvent)eventArgs;
+            eventAggregator.Publish(new NotifyEvent(thresholdReachedEvent.door));            
         }
 
         private static double CalculateAdditionalPrice(SmartDoor This)

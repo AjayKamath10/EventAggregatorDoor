@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventAggregatorDoor
 {
+    
     public enum DoorStates
     {
         OPEN,
@@ -14,15 +15,16 @@ namespace EventAggregatorDoor
 
     public class SimpleDoor
     {
+        protected EventAggregator eventAggregator;
         
         public string name { get; private set; }
         public DoorStates state { get; private set; }
 
-
         public double price { get; protected set; }
 
-        public SimpleDoor(string Name, double Price = 200)
+        public SimpleDoor(string Name, EventAggregator eventAggregator, double Price = 200)
         {
+            this.eventAggregator = eventAggregator;
             this.name = Name;
             this.state = DoorStates.CLOSE;//initial state
             this.price = Price;

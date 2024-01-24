@@ -8,19 +8,20 @@ namespace EventAggregatorDoor
 {
     public class AutoClose
     {
-        public   void Alert(SmartDoor Door) 
+        private EventAggregator eventAggregator;
+        public AutoClose(EventAggregator eventAggregator)
         {
-            Door.Close();
-            Logger.Write($"Door {Door.name} has been closed");
-        }
-        public void Subscribe(SmartDoor door)
-        {
-            door.TimerThresholdReachedEvent += this.Alert;
+            this.eventAggregator = eventAggregator;
+            this.eventAggregator.Subscribe<NotifyEvent>(Alert);
         }
 
-        public void UnSubscribe(SmartDoor door)
+        public void Alert(EventArgs eventArgs)
         {
-            door.TimerThresholdReachedEvent -= this.Alert;
+            NotifyEvent notifyEvent = (NotifyEvent)eventArgs;
+            notifyEvent.door.Close();
+            Logger.Write($"Door {notifyEvent.door.name} has been closed");
+
         }
+
     }
 }

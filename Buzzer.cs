@@ -8,19 +8,17 @@ namespace EventAggregatorDoor
 {
     public class Buzzer
     {
-        public void Alert(SmartDoor door)
+        private EventAggregator eventAggregator;
+        public Buzzer(EventAggregator eventAggregator) 
         {
-            Logger.Write($"Buzzer: door {door.name} is open");
+            this.eventAggregator = eventAggregator;
+            this.eventAggregator.Subscribe<NotifyEvent>(Alert);
         }
 
-        public void Subscribe(SmartDoor door)
+        public void Alert(EventArgs eventArgs)
         {
-            door.TimerThresholdReachedEvent += this.Alert;
-        }
-
-        public void UnSubscribe(SmartDoor door)
-        {
-            door.TimerThresholdReachedEvent -= this.Alert;
+            NotifyEvent notifyEvent = (NotifyEvent)eventArgs;
+            Logger.Write($"Buzzer: door {notifyEvent.door.name} is open");
         }
 
     }

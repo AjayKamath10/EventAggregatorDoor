@@ -8,18 +8,18 @@ namespace EventAggregatorDoor
 {
     public class Pager
     {
-        public void Alert(SmartDoor door)
+
+        private EventAggregator eventAggregator;
+        public Pager(EventAggregator eventAggregator)
         {
-            Logger.Write($"Pager: door {door.name} is open");
-        }
-        public void Subscribe(SmartDoor door)
-        {
-            door.TimerThresholdReachedEvent += this.Alert;
+            this.eventAggregator = eventAggregator;
+            this.eventAggregator.Subscribe<NotifyEvent>(Alert);
         }
 
-        public void UnSubscribe(SmartDoor door)
+        public void Alert(EventArgs eventArgs)
         {
-            door.TimerThresholdReachedEvent -= this.Alert;
+            NotifyEvent notifyEvent = (NotifyEvent)eventArgs;
+            Logger.Write($"Pager: door {notifyEvent.door.name} is open");
         }
     }
 }
